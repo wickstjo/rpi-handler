@@ -1,0 +1,24 @@
+{
+  "name": "rpi-handler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "push": "bash scripts/push.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wickstjo/rpi-handler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wickstjo/rpi-handler/issues"
+  },
+  "homepage": "https://github.com/wickstjo/rpi-handler#readme",
+  "dependencies": {
+    "node-cmd": "^3.0.0",
+    "web3": "^1.0.0-beta.55"
+  }
+}
