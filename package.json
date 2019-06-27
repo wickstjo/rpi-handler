@@ -19,6 +19,7 @@
   "homepage": "https://github.com/wickstjo/rpi-handler#readme",
   "dependencies": {
     "node-cmd": "^3.0.0",
+    "sha256": "^0.2.0",
     "web3": "^1.0.0-beta.55"
   }
 }
