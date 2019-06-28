@@ -10,17 +10,31 @@ function gateway() {
     return ping(connection.host, connection.port.ipfs);
 }
 
-// FETCH FILE CONTENT
+// ADD FILE/STRING
+function add({ type, payload }) {
+    switch(type) {
+
+        // ADD STRING
+        case 'string': {
+            return ipfs.add(Buffer.from(payload)).then(response => {
+                return response[0].hash;
+            });
+        }
+
+        // ADD FILE
+        case 'file': {
+            return ipfs.addFromFs(payload).then(response => {
+                return response[0].hash;
+            });
+        }
+    }
+}
+
+// FETCH HASH CONTENT
 function fetch(hash) {
     return ipfs.get(hash).then(response => {
         return response[0].content.toString('utf8');
     });
-}
-
-// ADD FILE
-function add(string) {
-    //return ipfs.add(Buffer.from(string));
-    return ipfs.add('./misc.js');
 }
 
 module.exports = {

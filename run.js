@@ -10,7 +10,13 @@ const { web3, contracts } = init();
 
 // process.exit();
 
-add('QmZJsQUWUes6vz6DzDT3z6383k1Y4hFYUKun9UkPN1PYSX').then(response => {
-    console.log(response);
-    process.exit();
+add({ type: 'string', payload: 'foobar' }).then(hash => {
+    console.log('content was added')
+
+    fetch(hash).then(content => {
+        console.log('content was read\n')
+
+        console.log(content);
+        process.exit();
+    });
 });
