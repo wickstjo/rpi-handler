@@ -1,6 +1,5 @@
-// IMPORT WEB3 MODULE
 const Web3 = require('web3');
-
+const { ping } = require('./misc.js');
 const { connection } = require('../references/settings.json');
 const references = require('../references/latest.json');
 
@@ -8,7 +7,7 @@ const references = require('../references/latest.json');
 function init() {
 
     // ESTABLISH WEB3 CONNECTION
-    let web3 = new Web3(connection.type + '://' + connection.host + ':' + connection.port);
+    let web3 = new Web3('ws://' + connection.host + ':' + connection.port.blockchain);
 
     // RETURN REFERENCES
     return {
@@ -30,6 +29,12 @@ function contract(web3, type) {
     );
 }
 
+// CHECK IF THE GATEWAY IS ONLINE
+function gateway() {
+    return ping(connection.host, connection.port.blockchain);
+}
+
 module.exports = {
-    init
+    init,
+    gateway
 }

@@ -1,7 +1,9 @@
 {
    "connection": {
-      "type": "ws",
       "host": "193.167.32.156",
-      "port": 8888
+      "port": {
+         "blockchain": 8888,
+         "ipfs": 5001
+      }
    }
 }
