@@ -45,5 +45,5 @@ function task(event) {
 module.exports = {
     ping,
     passport,
-    task
+    task,
 }
