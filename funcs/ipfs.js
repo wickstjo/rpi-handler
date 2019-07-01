@@ -6,7 +6,7 @@ var ipfs = ipfsClient({ host: connection.host, port: connection.port.ipfs, proto
 const Buffer = require('buffer/').Buffer;
 
 // CHECK IF THE GATEWAY IS ONLINE
-function gateway() {
+function status() {
     return ping(connection.host, connection.port.ipfs);
 }
 
@@ -38,7 +38,7 @@ function fetch(hash) {
 }
 
 module.exports = {
-    gateway,
+    status,
     fetch,
     add
 }

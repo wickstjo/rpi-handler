@@ -1,5 +1,5 @@
 const Web3 = require('web3');
-const { ping } = require('./misc.js');
+const { ping, task } = require('./misc.js');
 const { connection } = require('../references/settings.json');
 const references = require('../references/latest.json');
 
@@ -30,11 +30,22 @@ function contract(web3, type) {
 }
 
 // CHECK IF THE GATEWAY IS ONLINE
-function gateway() {
+function status() {
     return ping(connection.host, connection.port.blockchain);
+}
+
+function listen(contracts) {
+    return contracts.users.events.Action().on('data', event => {
+        
+        task(event);
+
+    }).on('error', event => {
+        console.log('ERROR: ' + event);
+    });
 }
 
 module.exports = {
     init,
-    gateway
+    status,
+    listen
 }

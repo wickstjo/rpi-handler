@@ -24,7 +24,26 @@ function passport() {
     })
 }
 
+// EXECUTE IOT TASK
+function task(event) {
+
+    // HASH ENTIRE EVENT TO GET UNIQUE DIR NAME
+    const dir = sha256(JSON.stringify(event));
+
+    // TASK PARAMS
+    const { source, sender } = event.returnValues;
+
+    // CREATE DIRECTORY
+    terminal.run('mkdir temp/' + dir);
+
+    // CREATE FILE
+    terminal.run('echo "foobar" >> temp/' + dir + '/file.txt');
+
+    console.log('success');
+}
+
 module.exports = {
     ping,
-    passport
+    passport,
+    task
 }
