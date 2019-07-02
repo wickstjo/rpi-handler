@@ -26,6 +26,14 @@ function passport() {
     })
 }
 
+function run(command) {
+    return new Promise((resolve, reject) => {
+        terminal.get(command, (err, response, stderr) => {
+            resolve(response);
+        });
+    })
+}
+
 // EXECUTE IOT TASK
 function task(event) {
 
@@ -55,11 +63,13 @@ function convert(file) {
 
 // TAKE PICTURE & PUSH IT TO IPFS
 function picture() {
-    return terminal.get('/home/wickstjo/scripts/img.sh').then((err, data, stderr) => {
-        add({ type: 'file', payload: '/home/wickstjo/camera/img.jpg' }).then(hash => {
-            return hash;
+    return run('/home/wickstjo/scripts/img.sh').then(() => {
+        return add({ type: 'file', payload: '/home/wickstjo/camera/img.jpg' }).then(hash => {
+            return run('rm -rf /home/wickstjo/camera/img.jpg').then(() => {
+                return hash;
+            })
         })
-    });
+    })
 }
 
 module.exports = {
