@@ -6,35 +6,52 @@ function worker() {
 }
 
 // ENCRYPT TEXT
-function encrypt(text) {
+function encrypt({ type, payload }) {
     return worker().then(() => {
 
-        // OPTIONS
-        const options = {
-            message: openpgp.message.fromBinary(new Uint8Array([0x01, 0x01, 0x01])),
-            passwords: ['password'],
-            armor: false
-        };
-         
-        return openpgp.encrypt(options).then(response => {
-            return response.message.packets.write();
-        });
+        switch (type) {
+
+            // BINARY CONTENT
+            case 'binary': {
+                return openpgp.encrypt({
+                    message: openpgp.message.fromBinary(new Uint8Array(payload)),
+                    passwords: ['password'],
+                    armor: false
+                }).then(response => { return response.message.packets.write(); });
+            }
+
+            // STRING CONTENT
+            case 'string': {
+                return openpgp.encrypt({
+                    message: openpgp.message.fromText(payload),
+                    passwords: ['password'],
+                }).then(response => { return response.data; });
+            }
+        }
     })
 }
 
 // ENCRYPT TEXT
-function decrypt(data) {
+function decrypt({ type, payload }) {
     return worker().then(async () => {
+        switch (type) {
 
-        // OPTIONS
-        const options = {
-            message: await openpgp.message.read(data),
-            passwords: ['password'],
-        };
-        
-        return openpgp.decrypt(options).then(response => {
-            return response.data;
-        });
+            // BINARY CONTENT
+            case 'binary': {
+                return openpgp.decrypt({
+                    message: await openpgp.message.read(payload),
+                    passwords: ['password'],
+                }).then(response => { return response.data; });
+            }
+
+            // STRING CONTENT
+            case 'string': {
+                return openpgp.decrypt({
+                    message: await openpgp.message.readArmored(payload),
+                    passwords: ['password'],
+                }).then(response => { return response.data; });
+            }
+        }
     })
 }
 

@@ -1,6 +1,8 @@
 // IMPORT HELPER MODULES
 const terminal = require('node-cmd');
 const sha256 = require('sha256');
+const binary = require('base64-img');
+const { add } = require('./ipfs.js');
 
 // CHECK IF A ADDRESS/PORT IS REACHABLE
 function ping(host, port) {
@@ -42,8 +44,28 @@ function task(event) {
     console.log('success');
 }
 
+// CONVERT IMAGE TO BASE64
+function convert(file) {
+    return new Promise((resolve, reject) => {
+        binary.base64(file, (err, data) => {
+            resolve(data);
+        })
+    })
+}
+
+// TAKE PICTURE & PUSH IT TO IPFS
+function picture() {
+    return terminal.get('/home/wickstjo/scripts/img.sh').then((err, data, stderr) => {
+        add({ type: 'file', payload: '/home/wickstjo/camera/img.jpg' }).then(hash => {
+            return hash;
+        })
+    });
+}
+
 module.exports = {
     ping,
     passport,
     task,
+    convert,
+    picture
 }

@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/wickstjo/rpi-handler#readme",
   "dependencies": {
+    "base64-img": "^1.0.4",
     "buffer": "^5.2.1",
     "ipfs-http-client": "^32.0.1",
     "node-cmd": "^3.0.0",

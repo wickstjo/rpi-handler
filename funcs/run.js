@@ -1,18 +1,20 @@
 const { init, listen } = require('./blockchain.js');
 const { status, fetch, add } = require('./ipfs.js');
 const { encrypt, decrypt } = require('./pgp.js');
+const { convert, picture } = require('./misc.js');
 const { web3, contracts } = init();
 
-encrypt('foobar').then(encrypted => {
-    console.log('encryption done')
+picture().then(hash => {
+    console.log(hash);
+})
 
-    decrypt(encrypted).then(response => {
-        console.log('decryption done\n')
-
-        console.log(response)
-        process.exit();
-    });
-});
+// encrypt({ type: 'string', payload: 'foobar' }).then(result => {
+//     console.log(result)
+    
+//     convert('/home/bdalab/wickstjo/data/img.jpg').then(response => {
+//         console.log(response)
+//     });
+// })
 
 //listen(contracts);
 
