@@ -1,7 +1,10 @@
 const Web3 = require('web3');
 const { ping, task } = require('./misc.js');
-const { connection } = require('../references/settings.json');
-const references = require('../references/latest.json');
+const { connection } = require('../resources/settings.json');
+
+// REFS
+const references = require('../resources/latest.json');
+const keys = require('../resources/keys.json');
 
 // INITIALIZE SC & WEB3
 function init() {
@@ -44,8 +47,9 @@ function listen(contracts) {
     });
 }
 
-function read(contracts, web3, user) {
-    return contracts.users.methods.fetch(user).call().then(response => {
+// READ USER DATA
+function read(contracts, web3) {
+    return contracts.users.methods.fetch(keys.public).call().then(response => {
         return {
             name: response.name,
             reputation: web3.utils.hexToNumber(response.reputation),
@@ -55,15 +59,28 @@ function read(contracts, web3, user) {
     })
 }
  
-// ADD USER
-function write(contracts, user, name) {
-    return contracts.users.methods.add(name).send({
-        from: user,
-        gas: 500000
-    }).then(() => {
-        return 'user added successfully';
-    }).catch(error => {
-        return error.toString();
+// WRITE USER DATA
+// https://stackoverflow.com/questions/46611117/how-to-authenticate-and-send-contract-method-using-web3-js-1-0s
+function write(contracts, web3, name) {
+
+    // SMART CONTRACT METHOD
+    const query = contracts.users.methods.add(name);
+
+    // TRANSACTION OUTLINE
+    const tx = {
+        from: keys.public,
+        to: contracts.users._address,
+        gas: 500000,
+        data: query.encodeABI()
+    }
+
+    // SIGN IT & EXECUTE
+    return web3.eth.accounts.signTransaction(tx, keys.private).then(signed => {
+        return web3.eth.sendSignedTransaction(signed.rawTransaction).then(() => {
+            return 'user added successfully';
+        }).catch(error => {
+            return error.toString();
+        });
     });
 }
 

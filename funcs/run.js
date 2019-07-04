@@ -4,23 +4,23 @@ const { encrypt, decrypt } = require('./pgp.js');
 const { convert, picture } = require('./misc.js');
 const { web3, contracts } = init();
 
-// write(contracts, '0x292427e705A76C91ac3743E83040B9752dDD128a', 'foobar').then(response => {
-//     console.log(response);
-//     process.exit();
-// })
-
-read(contracts, web3, '0x292427e705A76C91ac3743E83040B9752dDD128a').then(response => {
+read(contracts, web3).then(response => {
     console.log(response)
     
-    write(contracts, '0x292427e705A76C91ac3743E83040B9752dDD128a', 'foobar').then(response => {
+    write(contracts, web3, 'foobar').then(response => {
         console.log(response);
         
-        read(contracts, web3, '0x292427e705A76C91ac3743E83040B9752dDD128a').then(response => {
+        read(contracts, web3).then(response => {
             console.log(response)
             process.exit();
         })
     })
 })
+
+// write(contracts, '0x4bf6b10f822b465a65da10bbedf4322fc2e4bf6f', 'foobar').then(response => {
+//     console.log(response);
+//     process.exit();
+// })
 
 // picture().then(hash => {
 //     console.log(hash);

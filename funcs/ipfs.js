@@ -1,5 +1,5 @@
 const { ping } = require('./misc.js');
-const { connection } = require('../references/settings.json');
+const { connection } = require('../resources/settings.json');
 
 var ipfsClient = require('ipfs-http-client');
 var ipfs = ipfsClient({ host: connection.host, port: connection.port.ipfs, protocol: 'http' });
