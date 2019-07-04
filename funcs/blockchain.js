@@ -1,41 +1,5 @@
-const Web3 = require('web3');
-const { ping, task } = require('./misc.js');
-const { connection } = require('../resources/settings.json');
-
-// REFS
-const references = require('../resources/latest.json');
+const { task } = require('./misc.js');
 const keys = require('../resources/keys.json');
-
-// INITIALIZE SC & WEB3
-function init() {
-
-    // ESTABLISH WEB3 CONNECTION
-    let web3 = new Web3('ws://' + connection.host + ':' + connection.port.blockchain);
-
-    // RETURN REFERENCES
-    return {
-        web3: web3,
-        contracts: {
-            devices: contract(web3, 'devices'),
-            licences: contract(web3, 'licences'),
-            tasks: contract(web3, 'tasks'),
-            users: contract(web3, 'users')
-        }
-    }
-}
-
-// CONSTRUCT SMART CONTRACT REFERENCE
-function contract(web3, type) {
-    return new web3.eth.Contract(
-        references[type].abi,
-        references[type].address
-    );
-}
-
-// CHECK IF THE GATEWAY IS ONLINE
-function status() {
-    return ping(connection.host, connection.port.blockchain);
-}
 
 // LISTEN TO CONTRACT EVENTS
 function listen(contracts) {
@@ -85,8 +49,6 @@ function write(contracts, web3, name) {
 }
 
 module.exports = {
-    init,
-    status,
     listen,
     read,
     write

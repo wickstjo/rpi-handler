@@ -1,13 +1,10 @@
-const { ping } = require('./misc.js');
-const { connection } = require('../resources/settings.json');
-
-var ipfsClient = require('ipfs-http-client');
-var ipfs = ipfsClient({ host: connection.host, port: connection.port.ipfs, protocol: 'http' });
 const Buffer = require('buffer/').Buffer;
 
-// CHECK IF THE GATEWAY IS ONLINE
-function status() {
-    return ping(connection.host, connection.port.ipfs);
+// FETCH HASH CONTENT
+function fetch(hash) {
+    return ipfs.get(hash).then(response => {
+        return response[0].content.toString('utf8');
+    });
 }
 
 // ADD FILE/STRING
@@ -30,15 +27,7 @@ function add({ type, payload }) {
     }
 }
 
-// FETCH HASH CONTENT
-function fetch(hash) {
-    return ipfs.get(hash).then(response => {
-        return response[0].content.toString('utf8');
-    });
-}
-
 module.exports = {
-    status,
     fetch,
     add
 }

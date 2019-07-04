@@ -1,7 +1,6 @@
 // IMPORT HELPER MODULES
 const terminal = require('node-cmd');
 const sha256 = require('sha256');
-const binary = require('base64-img');
 const { add } = require('./ipfs.js');
 
 // CHECK IF A ADDRESS/PORT IS REACHABLE
@@ -26,14 +25,6 @@ function passport() {
     })
 }
 
-function run(command) {
-    return new Promise((resolve, reject) => {
-        terminal.get(command, (err, response, stderr) => {
-            resolve(response);
-        });
-    })
-}
-
 // EXECUTE IOT TASK
 function task(event) {
 
@@ -43,32 +34,37 @@ function task(event) {
     // TASK PARAMS
     const { source, sender } = event.returnValues;
 
-    // CREATE DIRECTORY
-    terminal.run('mkdir temp/' + dir);
-
-    // CREATE FILE
-    terminal.run('echo "foobar" >> temp/' + dir + '/file.txt');
-
-    console.log('success');
+    console.log('task ran successfully');
 }
 
-// CONVERT IMAGE TO BASE64
-function convert(file) {
-    return new Promise((resolve, reject) => {
-        binary.base64(file, (err, data) => {
-            resolve(data);
+// TAKE PICTURE & PUSH IT TO IPFS
+function picture(name) {
+    return run('raspistill -o ' + name + '.jpg').then(() => {
+        return add({ type: 'file', payload: name + '.jpg' }).then(hash => {
+            return run('rm -rf ' + name + '.jpg').then(() => {
+                return hash;
+            })
         })
     })
 }
 
-// TAKE PICTURE & PUSH IT TO IPFS
-function picture() {
-    return run('/home/wickstjo/scripts/img.sh').then(() => {
-        return add({ type: 'file', payload: '/home/wickstjo/camera/img.jpg' }).then(hash => {
-            return run('rm -rf /home/wickstjo/camera/img.jpg').then(() => {
+// RECORD VIDEO & PUSH IT TO IPFS
+function video(name, time) {
+    return run('raspivid -o ' + name + '.h264 -t ' + (time * 1000)).then(() => {
+        return add({ type: 'file', payload: name + '.h264' }).then(hash => {
+            return run('rm -rf ' + name + '.h264').then(() => {
                 return hash;
             })
         })
+    })
+}
+
+// PROMISIFY TERMINAL COMMAND
+function run(command) {
+    return new Promise((resolve, reject) => {
+        terminal.get(command, (err, response, stderr) => {
+            resolve(response);
+        });
     })
 }
 
@@ -76,6 +72,6 @@ module.exports = {
     ping,
     passport,
     task,
-    convert,
-    picture
+    picture,
+    video
 }

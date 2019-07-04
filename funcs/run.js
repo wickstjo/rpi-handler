@@ -1,8 +1,11 @@
-const { init, listen, read, write } = require('./blockchain.js');
-const { status, fetch, add } = require('./ipfs.js');
+const { init } = require('./connection.js');
+const { listen, read, write } = require('./blockchain.js');
+const { fetch, add } = require('./ipfs.js');
 const { encrypt, decrypt } = require('./pgp.js');
 const { convert, picture } = require('./misc.js');
-const { web3, contracts } = init();
+
+// CONNECT TO BLOCKCHAIN & IPFS GATEWAYS
+const { web3, contracts, ipfs } = init();
 
 read(contracts, web3).then(response => {
     console.log(response)

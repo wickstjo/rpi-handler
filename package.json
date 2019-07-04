@@ -4,7 +4,6 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
         "push": "bash scripts/push.sh",
         "run": "bash scripts/run.sh",
         "fix": "bash scripts/fix.sh"
@@ -20,7 +19,6 @@
     },
     "homepage": "https://github.com/wickstjo/rpi-handler#readme",
     "dependencies": {
-        "base64-img": "^1.0.4",
         "buffer": "^5.2.1",
         "ipfs-http-client": "^32.0.1",
         "node-cmd": "^3.0.0",
