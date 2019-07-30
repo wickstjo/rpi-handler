@@ -1,12 +1,56 @@
-import React from 'react';
-import { Color, Box, Static } from 'ink';
+import React, { Fragment, useState } from 'react';
+import { render } from 'ink';
 
-function App() { return (
-   <Static>
-      <Box width={ 2 } height={ 1 }>
-         <Color red>npm run command selector!</Color>
-      </Box>
-   </Static>
-)}
+import Container from './components/container';
+import Options from './components/options';
 
-export default App;
+function App() {
+
+   // LOCAL STATE
+   const [messages, add] = useState([])
+
+   function first() {
+      add([
+         ...messages,
+         'first'
+      ])
+   }
+
+   function second() {
+      add([
+         ...messages,
+         'second'
+      ])
+   }
+
+   function third() {
+      add([
+         ...messages,
+         'third'
+      ])
+   }
+
+   return (
+      <Fragment>
+         <Container data={ messages } />
+         <Options
+            data={[
+               {
+                  label: 'First',
+                  value: first
+               },
+               {
+                  label: 'Second',
+                  value: second
+               },
+               {
+                  label: 'Third',
+                  value: third
+               }
+            ]}
+         />
+      </Fragment>
+   )
+}
+
+render(<App />)
