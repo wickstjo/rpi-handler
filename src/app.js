@@ -1,5 +1,7 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useReducer } from 'react';
 import { render } from 'ink';
+import { sleep } from './funcs/temp';
+import { task as reducer } from './funcs/reducers';
 
 import Container from './components/container';
 import Options from './components/options';
@@ -7,27 +9,37 @@ import Options from './components/options';
 function App() {
 
    // LOCAL STATE
-   const [messages, add] = useState([])
+   const [messages, dispatch] = useReducer(reducer, [])
 
    function first() {
-      add([
-         ...messages,
-         'first'
-      ])
+
+      // START TASK
+      dispatch({
+         type: 'start',
+         payload: 'initiated first'
+      })
+
+      // SAVE INDEX
+      const length = messages.length;
+
+      // WAIT 2 SECONDS
+      sleep(2000).then(() => {
+
+         // FINISH TASK
+         dispatch({
+            type: 'finish',
+            payload: {
+               value: 'finished first',
+               index: length
+            }
+         })
+      })
    }
 
    function second() {
-      add([
-         ...messages,
-         'second'
-      ])
    }
 
    function third() {
-      add([
-         ...messages,
-         'third'
-      ])
    }
 
    return (
