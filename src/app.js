@@ -5,7 +5,7 @@ import { task as reducer } from './funcs/reducers';
 import Container from './components/container';
 import Options from './components/options';
 
-function App() {
+function App({ state }) {
 
    // LOCAL STATE
    const [messages, dispatch] = useReducer(reducer, [])
@@ -15,7 +15,7 @@ function App() {
       // START TASK
       dispatch({
          type: 'start',
-         payload: 'initiated first'
+         payload: 'INITIATED FIRST'
       })
 
       // SAVE INDEX
@@ -28,7 +28,7 @@ function App() {
          dispatch({
             type: 'finish',
             payload: {
-               value: 'finished first',
+               value: 'FINISHED FIRST',
                index: length
             }
          })

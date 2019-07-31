@@ -7,7 +7,7 @@ function task(local, action) {
          return [
             ...local, {
                value: action.payload,
-               color: '#E3E677'
+               type: action.type
             }
          ]
       }
@@ -21,7 +21,7 @@ function task(local, action) {
          // REPLACE THE INDEX VALUE
          temp[action.payload.index] = {
             value: action.payload.value,
-            color: '#62C465'
+            type: action.type
          }
 
          return temp;
@@ -36,7 +36,7 @@ function task(local, action) {
          // REPLACE THE INDEX VALUE
          temp[action.payload.index] = {
             value: action.payload.value,
-            color: '#E5666A'
+            type: action.type
          }
       
          return temp;

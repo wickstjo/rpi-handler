@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { render, Box } from 'ink';
 import { sleep } from './funcs/temp';
 
-import Message from './components/Message';
+import Loading from './components/loading';
 import App from './app';
 
 function Init() {
 
    // CONNECTION STATE
-   const [connection, set] = useState({
+   const [state, set_state] = useState({
       web3: null,
       contracts: null,
       ipfs: null
@@ -19,20 +19,20 @@ function Init() {
       sleep(2000).then(() => {
 
          // ATTEMPT TO CONNECT
-         set({
-            ...connection,
+         set_state({
+            ...state,
             web3: 'something'
          })
       })
    }, [])
    
-   switch (connection.web3) {
+   switch (state.web3) {
 
       // NO CONNECTION
       case null: { return (
          <Box paddingLeft={ 2 } paddingTop={ 1 }>
-            <Message
-               text={ 'Attempting to Connect...' }
+            <Loading
+               text={ 'CONNECTING' }
                color={ '#00FF00' }
             />
          </Box>
@@ -40,7 +40,7 @@ function Init() {
 
       // CONNECTED
       default: { return (
-         <App connection={ connection } />
+         <App state={ state } />
       )}
    }
 }
