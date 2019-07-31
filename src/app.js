@@ -1,5 +1,4 @@
 import React, { Fragment, useReducer } from 'react';
-import { render } from 'ink';
 import { sleep } from './funcs/temp';
 import { task as reducer } from './funcs/reducers';
 
@@ -65,4 +64,4 @@ function App() {
    )
 }
 
-render(<App />)
+export default App;
