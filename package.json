@@ -4,7 +4,8 @@
    "description": "",
    "main": "index.js",
    "scripts": {
-      "push": "bash scripts/push.sh"
+      "push": "bash scripts/push.sh",
+      "install": "bash scripts/install.sh"
    },
    "keywords": [],
    "author": "wickstjo",
@@ -17,7 +18,8 @@
       "node-cmd": "^3.0.0",
       "openpgp": "^4.5.5",
       "react": "^16.8.6",
-      "sha256": "^0.2.0"
+      "sha256": "^0.2.0",
+      "web3": "^1.0.0-beta.37"
    },
    "devDependencies": {
       "@babel/cli": "^7.4.3",
