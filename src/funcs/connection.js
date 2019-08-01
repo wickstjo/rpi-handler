@@ -1,53 +1,42 @@
-const Web3 = require('web3');
-var ipfsClient = require('ipfs-http-client');
-const { ping } = require('./misc.js');
-
-const { connection } = require('../resources/settings.json');
-const references = require('../resources/latest.json');
+import WEB3 from 'web3';
+import IPFS from 'ipfs-http-client';
+import references from '../resources/latest.json';
 
 // INITIALIZE SC & WEB3
-function init() {
+function init(gateways) {
 
     // ESTABLISH WEB3 CONNECTION
-    let web3 = new Web3('ws://' + connection.host + ':' + connection.port.blockchain);
+    let web3 = new WEB3('ws://' + gateways.blockchain.host + ':' + gateways.blockchain.port);
 
     // RETURN REFERENCES
     return {
         web3: web3,
-        contracts: {
-            devices: contract(web3, 'devices'),
-            licences: contract(web3, 'licences'),
-            tasks: contract(web3, 'tasks'),
-            users: contract(web3, 'users')
-        },
-        ipfs: ipfsClient({
-            host: connection.host,
-            port: connection.port.ipfs,
-            protocol: 'http'
+        contracts: contracts(web3),
+        ipfs: IPFS({
+            host: gateways.ipfs.host,
+            port: gateways.ipfs.port,
         })
     }
 }
 
 // CONSTRUCT SMART CONTRACT REFERENCE
-function contract(web3, type) {
-    return new web3.eth.Contract(
-        references[type].abi,
-        references[type].address
-    );
-}
+function contracts(web3) {
+    
+    // RELEVANT SMART CONTRACT NAMES & RESPONSE PLACEHOLDER
+    const contracts = ['devices', 'licences', 'tasks', 'users']
+    const response = {};
 
-// CHECK IPFS GATEWAY
-function check_ipfs() {
-    return ping(connection.host, connection.port.ipfs);
-}
+    // LOOP THROUGH & COMBINE EACH ABI & ADDRESS
+    contracts.forEach(name => {
+        response[name] = new web3.eth.Contract(
+            references[name].abi,
+            references[name].address
+        )
+    })
 
-// CHECK BLOCKCHAIN GATEWAY
-function check_blockchain() {
-    return ping(connection.host, connection.port.blockchain);
+    return response;
 }
 
 module.exports = {
-    init,
-    check_ipfs,
-    check_blockchain
+    init
 }

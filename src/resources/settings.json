@@ -1,9 +1,12 @@
 {
-   "connection": {
-      "host": "193.167.32.156",
-      "port": {
-         "blockchain": 8888,
-         "ipfs": 5001
+   "gateways": {
+      "ipfs": {
+         "host": "193.167.32.156",
+         "port": 5001
+      },
+      "blockchain": {
+         "host": "193.167.32.156",
+         "port": 8888
       }
    }
 }

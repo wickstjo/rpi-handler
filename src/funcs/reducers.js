@@ -1,11 +1,29 @@
+// INIT REDUCER
+function init(state, action) {
+   switch (action.type) {
+
+      // IF EVERYTHING GOES WELL
+      case 'success': { return {
+         ...state,
+         ...action.payload
+      }}
+
+      // OTHERWISE
+      case 'fail': { return {
+         ...state,
+         web3: 'fail'
+      }}
+   }
+}
+
 // TASK REDUCER
-function task(local, action) {
+function task(state, action) {
    switch (action.type) {
 
       // START TASK
       case 'start': {
          return [
-            ...local, {
+            ...state, {
                value: action.payload,
                type: action.type
             }
@@ -16,7 +34,7 @@ function task(local, action) {
       case 'finish': {
 
          // CLONE THE ARRAY
-         const temp = [ ...local ];
+         const temp = [ ...state ];
 
          // REPLACE THE INDEX VALUE
          temp[action.payload.index] = {
@@ -31,7 +49,7 @@ function task(local, action) {
       case 'abort': {
 
          // CLONE THE ARRAY
-         const temp = [ ...local ];
+         const temp = [ ...state ];
       
          // REPLACE THE INDEX VALUE
          temp[action.payload.index] = {
@@ -44,11 +62,12 @@ function task(local, action) {
 
       // FALLBACK
       default: {
-         return local;
+         return state;
       }
    }
 }
 
 module.exports = {
+   init,
    task
 }

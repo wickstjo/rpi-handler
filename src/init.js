@@ -1,14 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { render, Box } from 'ink';
-import { sleep } from './funcs/temp';
+import React, { useReducer, useEffect } from 'react';
+import { init } from './funcs/connection.js';
+import { sleep } from './funcs/misc';
+import { ping } from './funcs/terminal';
+import { init as reducer } from './funcs/reducers';
+import { gateways } from './resources/settings.json';
 
+import { render, Box } from 'ink';
 import Loading from './components/loading';
+import Message from './components/message';
 import App from './app';
 
 function Init() {
 
-   // CONNECTION STATE
-   const [state, set_state] = useState({
+   // REFERENCE STATE
+   const [state, dispatch] = useReducer(reducer, {
       web3: null,
       contracts: null,
       ipfs: null
@@ -16,16 +21,31 @@ function Init() {
 
    // ON INITIAL LOAD...
    useEffect(() => {
-      sleep(2000).then(() => {
+      
+      // PING THE BLOCKCHAIN & IPFS GATEWAY
+      ping(gateways.blockchain.host, gateways.blockchain.port).then(blockchain => {
+         ping(gateways.ipfs.host, gateways.ipfs.port).then(ipfs => {
 
-         // ATTEMPT TO CONNECT
-         set_state({
-            ...state,
-            web3: 'something'
+            // SLEEP FOR AN EXTRA SECOND
+            sleep(1000).then(() => {
+
+               // IF BOTH OF THEM RESPOND NORMALLY
+               if (blockchain && ipfs) {
+
+                  // PUSH REFENRECES
+                  dispatch({
+                     type: 'success',
+                     payload: init(gateways)
+                  })
+
+               // OTHERWISE, PROMPT ERROR
+               } else { dispatch({ type: 'fail' }) }
+            })
          })
       })
    }, [])
    
+   // DETERMINE RELEVANT CONTENT
    switch (state.web3) {
 
       // NO CONNECTION
@@ -38,9 +58,23 @@ function Init() {
          </Box>
       )}
 
+      // CONNECTION FAILS
+      case 'fail': { return (
+         <Box paddingBottom={ 1 } paddingLeft={ 2 }>
+            <Message
+               text={ 'COULD NOT CONNECT, TRY AGAIN' }
+               color={ '#FF0000' }
+            />
+         </Box>   
+      )}
+
       // CONNECTED
       default: { return (
-         <App state={ state } />
+         <App
+            web3={ state.web3 }
+            contracts={ state.contracts }
+            ipfs={ state.ipfs }
+         />
       )}
    }
 }

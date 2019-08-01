@@ -1,38 +1,24 @@
 import React, { Fragment, useReducer } from 'react';
-import { sleep } from './funcs/temp';
+import { query } from './funcs/misc';
 import { task as reducer } from './funcs/reducers';
+import { passport } from './funcs/terminal';
 
 import Container from './components/container';
 import Options from './components/options';
 
-function App({ state }) {
+function App({ web3, contracts, ipfs }) {
 
    // LOCAL STATE
    const [messages, dispatch] = useReducer(reducer, [])
 
-   function first() {
-
-      // START TASK
-      dispatch({
-         type: 'start',
-         payload: 'INITIATED FIRST'
-      })
-
-      // SAVE INDEX
-      const length = messages.length;
-
-      // WAIT 2 SECONDS
-      sleep(2000).then(() => {
-
-         // FINISH TASK
-         dispatch({
-            type: 'finish',
-            payload: {
-               value: 'FINISHED FIRST',
-               index: length
-            }
-         })
-      })
+   // GENERATE DEVICE PASSPORT
+   function Passport() {
+      query({
+         start: 'GENERATING DEVICE PASSPORT',
+         success: 'PASSPORT GENERATION SUCCESSFUL',
+         error: 'SOMETHING WENT WRONG',
+         func: passport()
+      }, messages, dispatch)
    }
 
    function second() {
@@ -47,8 +33,8 @@ function App({ state }) {
          <Options
             data={[
                {
-                  label: 'First',
-                  value: first
+                  label: 'Generate Hashed ID',
+                  value: Passport
                },
                {
                   label: 'Second',

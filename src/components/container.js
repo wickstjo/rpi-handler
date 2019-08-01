@@ -40,23 +40,25 @@ function Row({ item }) {
       case 'start': { return (
          <Loading
             text={ item.value }
-            color={ '#E3E677' }
+            color={ '#FFD700' }
          />
       )}
 
       // FINISHED TASK
       case 'finish': { return (
-         <Message
-            text={ item.value }
-            color={ '#62C465' }
-         />
+         <Box paddingBottom={ 1 }>
+            <Message
+               text={ item.value }
+               color={ '#00FF00' }
+            />
+         </Box>
       )}
 
       // ABORTED TASK
       case 'abort': { return (
          <Message
             text={ item.value }
-            color={ '#E5666A' }
+            color={ '#FF0000' }
          />
       )}
    }

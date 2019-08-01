@@ -4,6 +4,7 @@
    "description": "",
    "main": "index.js",
    "scripts": {
+      "start": "sudo node run",
       "push": "bash scripts/push.sh",
       "install": "bash scripts/install.sh"
    },

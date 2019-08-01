@@ -1,4 +1,4 @@
-const { task } = require('./misc.js');
+const { task } = require('../funcs/misc.js');
 const keys = require('../resources/keys.json');
 
 // LISTEN TO CONTRACT EVENTS
