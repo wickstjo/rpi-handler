@@ -1,8 +1,8 @@
-const { init } = require('../funcs/connection.js');
+const { init } = require('./funcs/connection.js');
 const { listen, read, write } = require('./blockchain.js');
 const { fetch, add } = require('./ipfs.js');
 const { encrypt, decrypt } = require('./pgp.js');
-const { convert, picture } = require('../funcs/misc.js');
+const { convert, picture } = require('./funcs/misc.js');
 
 // CONNECT TO BLOCKCHAIN & IPFS GATEWAYS
 const { web3, contracts, ipfs } = init();
@@ -34,7 +34,7 @@ read(contracts, web3).then(response => {
     
 //     convert('/home/bdalab/wickstjo/data/img.jpg').then(response => {
 //         console.log(response)
-//     });
+//     })
 // })
 
 //listen(contracts);
@@ -50,5 +50,5 @@ read(contracts, web3).then(response => {
 //         // LOG IT & EXIT
 //         console.log(content);
 //         process.exit();
-//     });
-// });
+//     })
+// })

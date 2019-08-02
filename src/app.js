@@ -21,12 +21,6 @@ function App({ web3, contracts, ipfs }) {
       }, messages, dispatch)
    }
 
-   function second() {
-   }
-
-   function third() {
-   }
-
    return (
       <Fragment>
          <Container data={ messages } />
@@ -35,14 +29,6 @@ function App({ web3, contracts, ipfs }) {
                {
                   label: 'Generate Hashed ID',
                   value: Passport
-               },
-               {
-                  label: 'Second',
-                  value: second
-               },
-               {
-                  label: 'Third',
-                  value: third
                }
             ]}
          />
