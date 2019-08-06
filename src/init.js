@@ -2,7 +2,7 @@ import React, { useReducer, useEffect } from 'react';
 import { init } from './funcs/connection.js';
 import { sleep } from './funcs/misc';
 import { ping } from './funcs/terminal';
-import { init as reducer } from './funcs/reducers';
+import { values, reducer } from './states/init';
 import { gateways } from './resources/settings.json';
 
 import { render, Box } from 'ink';
@@ -13,12 +13,7 @@ import App from './app';
 function Init() {
 
    // REFERENCE STATE
-   const [state, dispatch] = useReducer(reducer, {
-      web3: null,
-      contracts: null,
-      interfaces: null,
-      ipfs: null
-   })
+   const [state, dispatch] = useReducer(reducer, values)
 
    // ON INITIAL LOAD...
    useEffect(() => {
@@ -71,12 +66,7 @@ function Init() {
 
       // CONNECTED
       default: { return (
-         <App
-            web3={ state.web3 }
-            contracts={ state.contracts }
-            interfaces={ state.interfaces }
-            ipfs={ state.ipfs }
-         />
+         <App state={ state } />
       )}
    }
 }

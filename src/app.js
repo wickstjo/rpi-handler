@@ -1,15 +1,17 @@
 import React, { Fragment, useReducer } from 'react';
+import { reducer, values } from './states/message';
+
 import { query } from './funcs/misc';
-import { task as reducer } from './funcs/reducers';
 import { passport, picture, video } from './funcs/terminal';
+import { register } from './contracts/devices';
 
 import Container from './components/container';
 import Options from './components/options';
 
-function App({ web3, contracts, interfaces, ipfs }) {
+function App({ state }) {
 
    // LOCAL STATE
-   const [messages, dispatch] = useReducer(reducer, [])
+   const [messages, dispatch] = useReducer(reducer, values)
 
    // SET PUBLIC & PRIVATE KEYS
    function Keys() {
@@ -18,7 +20,16 @@ function App({ web3, contracts, interfaces, ipfs }) {
 
    // REGISTER DEVICE ON BLOCKCHAIN
    function Register() {
-      console.log('register')
+      return passport().then(result => {
+         if (result.success) {
+            query({
+               start: 'REGISTERING DEVICE',
+               success: 'DEVICE REGISTERED',
+               error: 'REGISTERATION FAILED',
+               func: register(result.data, 'foobar', state)
+            }, messages, dispatch)
+         }
+      })
    }
 
    // SUBSCRIBE TO SMART CONTRACT EVENTS

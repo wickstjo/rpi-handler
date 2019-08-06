@@ -18,7 +18,10 @@ function passport() {
       terminal.get('sudo lshw', (err, response, stderr) => {
 
          // HASH THE RESPONSE & RESOLVE
-         resolve(sha256(response));
+         resolve({
+            success: true,
+            data: sha256(response)
+         })
       })
    })
 }

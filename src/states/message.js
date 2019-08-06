@@ -1,23 +1,8 @@
-// INIT REDUCER
-function init(state, action) {
-   switch (action.type) {
+// DEFAULT VALUES
+const values = [];
 
-      // IF EVERYTHING GOES WELL
-      case 'success': { return {
-         ...state,
-         ...action.payload
-      }}
-
-      // OTHERWISE
-      case 'fail': { return {
-         ...state,
-         web3: 'fail'
-      }}
-   }
-}
-
-// TASK REDUCER
-function task(state, action) {
+// STATE REDUCER
+function reducer(state, action) {
    switch (action.type) {
 
       // START TASK
@@ -67,7 +52,7 @@ function task(state, action) {
    }
 }
 
-module.exports = {
-   init,
-   task
+export {
+   values,
+   reducer
 }

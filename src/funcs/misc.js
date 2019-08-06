@@ -17,15 +17,30 @@ function query({ start, success, error, func }, messages, dispatch) {
 
    // EXECUTE THE FUNCTION
    func.then(result => {
-      
-      // FINISH TASK
-      dispatch({
-         type: 'finish',
-         payload: {
-            value: success + ':\n' + result,
-            index: length
+      switch (result.success) {
+
+         // EVERYTHING WENT OK
+         case true:
+            dispatch({
+               type: 'finish',
+               payload: {
+                  value: success + result.data,
+                  index: length
+               }
+            })
+         break;
+
+         // SOMETHING WENT WRONG
+         default: {
+            dispatch({
+               type: 'abort',
+               payload: {
+                  value: error,
+                  index: length
+               }
+            })
          }
-      })
+      }
 
    // IF AN ERROR IS CAUGHT
    }).catch(err => {
