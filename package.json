@@ -1,11 +1,14 @@
 {
-   "name": "react-cli",
+   "name": "rpi-handler",
    "version": "1.0.0",
    "description": "",
    "main": "index.js",
    "scripts": {
       "start": "sudo node run",
       "push": "bash scripts/push.sh",
+      "zip": "bash scripts/zip.sh",
+      "fetch": "bash scripts/fetch.sh",
+      "transfer": "bash scripts/transfer.sh",
       "install": "bash scripts/install.sh"
    },
    "keywords": [],

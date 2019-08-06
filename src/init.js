@@ -16,6 +16,7 @@ function Init() {
    const [state, dispatch] = useReducer(reducer, {
       web3: null,
       contracts: null,
+      interfaces: null,
       ipfs: null
    })
 
@@ -73,6 +74,7 @@ function Init() {
          <App
             web3={ state.web3 }
             contracts={ state.contracts }
+            interfaces={ state.interfaces }
             ipfs={ state.ipfs }
          />
       )}

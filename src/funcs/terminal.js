@@ -25,24 +25,12 @@ function passport() {
 
 // TAKE PICTURE & PUSH IT TO IPFS
 function picture(name) {
-   return run('raspistill -o ' + name + '.jpg').then(() => {
-      return add({ type: 'file', payload: name + '.jpg' }).then(hash => {
-         return run('rm -rf ' + name + '.jpg').then(() => {
-               return hash;
-         })
-      })
-   })
+   return run('raspistill -o /home/wickstjo/cam/' + name + '.jpg')
 }
 
 // RECORD VIDEO & PUSH IT TO IPFS
 function video(name, time) {
-   return run('raspivid -o ' + name + '.h264 -t ' + (time * 1000)).then(() => {
-      return add({ type: 'file', payload: name + '.h264' }).then(hash => {
-         return run('rm -rf ' + name + '.h264').then(() => {
-               return hash;
-         })
-      })
-   })
+   return run('raspivid -o /home/wickstjo/cam/' + name + '.h264 -t ' + (time * 1000))
 }
 
 // PROMISIFY TERMINAL COMMAND
