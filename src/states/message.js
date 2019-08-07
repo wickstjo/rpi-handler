@@ -5,44 +5,12 @@ const values = [];
 function reducer(state, action) {
    switch (action.type) {
 
-      // START TASK
-      case 'start': {
+      // ADD MESSAGE
+      case 'add': {
          return [
-            ...state, {
-               value: action.payload,
-               type: action.type
-            }
+            ...state,
+            action.payload
          ]
-      }
-
-      // FINISH TASK
-      case 'finish': {
-
-         // CLONE THE ARRAY
-         const temp = [ ...state ];
-
-         // REPLACE THE INDEX VALUE
-         temp[action.payload.index] = {
-            value: action.payload.value,
-            type: action.type
-         }
-
-         return temp;
-      }
-
-      // ABORT TASK
-      case 'abort': {
-
-         // CLONE THE ARRAY
-         const temp = [ ...state ];
-      
-         // REPLACE THE INDEX VALUE
-         temp[action.payload.index] = {
-            value: action.payload.value,
-            type: action.type
-         }
-      
-         return temp;
       }
 
       // FALLBACK

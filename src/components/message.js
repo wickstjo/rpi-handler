@@ -1,10 +1,11 @@
 import React from 'react';
 import { Color, Box } from 'ink';
 
-function Message({ text, color, bg }) { return (
+function Message({ text, extra, color }) { return (
    <Box>
-      <Color hex={ color } bgHex={ bg }>
+      <Color hex={ color }>
          { text }
+         { (extra === undefined) ? null : '\n=> ' + extra }
       </Color>
    </Box>
 )}

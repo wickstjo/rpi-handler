@@ -1,11 +1,11 @@
 import React, { Fragment, useReducer } from 'react';
 import { reducer, values } from './states/message';
 
-import { query } from './funcs/misc';
+import { ping } from './funcs/misc';
 import { passport, picture, video } from './funcs/terminal';
 import { register } from './contracts/devices';
 
-import Container from './components/container';
+import Messages from './components/messages';
 import Options from './components/options';
 
 function App({ state }) {
@@ -13,21 +13,23 @@ function App({ state }) {
    // LOCAL STATE
    const [messages, dispatch] = useReducer(reducer, values)
 
-   // SET PUBLIC & PRIVATE KEYS
-   function Keys() {
-      console.log('keys')
+   // SUBSCRIBE TO SMART CONTRACT EVENTS
+   function Gateways() {
+      dispatch({
+         type: 'add',
+         payload: {
+            message: 'testing',
+            status: 'running',
+            extra: 'foobar'
+         }
+      })
    }
 
    // REGISTER DEVICE ON BLOCKCHAIN
    function Register() {
       return passport().then(result => {
          if (result.success) {
-            query({
-               start: 'REGISTERING DEVICE',
-               success: 'DEVICE REGISTERED',
-               error: 'REGISTERATION FAILED',
-               func: register(result.data, 'foobar', state)
-            }, messages, dispatch)
+            console.log('win')
          }
       })
    }
@@ -39,42 +41,24 @@ function App({ state }) {
 
    // CHECK DEVICE ID
    function Passport() {
-      query({
-         start: 'GENERATING DEVICE ID',
-         success: 'THE DEVICE ID IS',
-         error: 'PASSPORT GENERATION FAILED',
-         func: passport()
-      }, messages, dispatch)
    }
 
    // TAKE & TRANSFER PICTURE
    function Picture() {
-      query({
-         start: 'TAKING PICTURE',
-         success: 'TOOK PICTURE SUCCESSFULLY',
-         error: 'TAKING PICTURE FAILED',
-         func: picture('img')
-      }, messages, dispatch)
    }
 
    // RECORD & TRANSFER VIDEO
    function Video() {
-      query({
-         start: 'RECORDING VIDEO',
-         success: 'VIDEO RECORDING ENDED SUCCESSFULLY',
-         error: 'RECORDING FAILED',
-         func: video('vid', 5)
-      }, messages, dispatch)
    }
 
    return (
       <Fragment>
-         <Container data={ messages } />
+         <Messages data={ messages } />
          <Options
             data={[
                {
-                  label: 'Set Account Keys',
-                  value: Keys
+                  label: 'Check Gateways',
+                  value: Gateways
                },
                {
                   label: 'Register Device',

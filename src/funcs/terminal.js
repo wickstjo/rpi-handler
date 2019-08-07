@@ -3,44 +3,59 @@ import sha256 from 'sha256';
 
 // CHECK IF A ADDRESS/PORT IS REACHABLE
 function ping(host, port) {
-   return new Promise((resolve, reject) => {
-      terminal.get('nc -vz ' + host + ' ' + port, (err, response, stderr) => {
-
-         // CHECK ONLINE STATUS & RESOLVE
-         resolve(stderr.includes('succeeded'));
-      })
-   })
+   return run('nc -vz ' + host + ' ' + port);
 }
 
 // GENERATE ID BASED ON HARDWARE SNAPSHOT & SERIAL NUMBER
 function passport() {
-   return new Promise((resolve, reject) => {
-      terminal.get('sudo lshw', (err, response, stderr) => {
+   return run('lshw').then(result => {
+      switch (result.success) {
 
-         // HASH THE RESPONSE & RESOLVE
-         resolve({
+         // ON SUCCESS
+         case true: { return {
             success: true,
-            data: sha256(response)
-         })
-      })
+            data: sha256(result.data)
+         }}
+
+         // ON ERROR
+         default: { return {
+            reason: result.reason
+         }}
+      }
    })
 }
 
 // TAKE PICTURE & PUSH IT TO IPFS
 function picture(name) {
-   return run('raspistill -o /home/wickstjo/cam/' + name + '.jpg')
+   return run('raspistill -o /home/wickstjo/cam/' + name + '.jpg');
 }
 
 // RECORD VIDEO & PUSH IT TO IPFS
 function video(name, time) {
-   return run('raspivid -o /home/wickstjo/cam/' + name + '.h264 -t ' + (time * 1000))
+   return run('raspivid -o /home/wickstjo/cam/' + name + '.h264 -t ' + (time * 1000));
 }
 
 // PROMISIFY TERMINAL COMMAND
 function run(command) {
    return new Promise((resolve, reject) => {
-      terminal.get(command, (err, response, stderr) => {
-         resolve(response);
+      terminal.get(command, (error, response, standard) => {
+         switch(error) {
+
+            // IF THERE ARE NO ERRORS
+            case null:
+               resolve({
+                  success: true,
+                  data: response
+               })
+            break;
+
+            // OTHERWISE
+            default:
+               resolve({
+                  reason: standard
+               })
+            break;
+         }
       })
    })
 }

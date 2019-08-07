@@ -1,9 +1,10 @@
 import WEB3 from 'web3';
 import IPFS from 'ipfs-http-client';
 import references from '../resources/latest.json';
+import { gateways } from '../resources/settings.json';
 
 // INITIALIZE SC & WEB3
-function init(gateways) {
+function init() {
 
     // ESTABLISH WEB3 CONNECTION
     let web3 = new WEB3('ws://' + gateways.blockchain.host + ':' + gateways.blockchain.port);

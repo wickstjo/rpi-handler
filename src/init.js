@@ -1,13 +1,8 @@
 import React, { useReducer, useEffect } from 'react';
-import { init } from './funcs/connection.js';
-import { sleep } from './funcs/misc';
-import { ping } from './funcs/terminal';
-import { values, reducer } from './states/init';
-import { gateways } from './resources/settings.json';
+import { render } from 'ink';
 
-import { render, Box } from 'ink';
-import Loading from './components/loading';
-import Message from './components/message';
+import { init } from './funcs/connection.js';
+import { values, reducer } from './states/init';
 import App from './app';
 
 function Init() {
@@ -17,27 +12,11 @@ function Init() {
 
    // ON INITIAL LOAD...
    useEffect(() => {
-      
-      // PING THE BLOCKCHAIN & IPFS GATEWAY
-      ping(gateways.blockchain.host, gateways.blockchain.port).then(blockchain => {
-         ping(gateways.ipfs.host, gateways.ipfs.port).then(ipfs => {
 
-            // SLEEP FOR AN EXTRA SECOND
-            sleep(1000).then(() => {
-
-               // IF BOTH OF THEM RESPOND NORMALLY
-               if (blockchain && ipfs) {
-
-                  // PUSH REFENRECES
-                  dispatch({
-                     type: 'success',
-                     payload: init(gateways)
-                  })
-
-               // OTHERWISE, PROMPT ERROR
-               } else { dispatch({ type: 'fail' }) }
-            })
-         })
+      // PUSH REFENRECES
+      dispatch({
+         type: 'success',
+         payload: init()
       })
    }, [])
    
@@ -45,24 +24,9 @@ function Init() {
    switch (state.web3) {
 
       // NO CONNECTION
-      case null: { return (
-         <Box paddingLeft={ 2 } paddingTop={ 1 }>
-            <Loading
-               text={ 'CONNECTING' }
-               color={ '#00FF00' }
-            />
-         </Box>
-      )}
-
-      // CONNECTION FAILS
-      case 'fail': { return (
-         <Box paddingBottom={ 1 } paddingLeft={ 2 }>
-            <Message
-               text={ 'COULD NOT CONNECT, TRY AGAIN' }
-               color={ '#FF0000' }
-            />
-         </Box>   
-      )}
+      case null: {
+         return null;
+      }
 
       // CONNECTED
       default: { return (

@@ -3,8 +3,50 @@ function sleep (time) {
    return new Promise((resolve) => setTimeout(resolve, time));
 }
 
+function query({ name, func }, dispatch) {
+
+   // START TASK
+   dispatch({
+      type: 'add',
+      payload: {
+         message: name,
+         status: 'running'
+      }
+   })
+
+   // EXECUTE FUNC
+   func().then(result => {
+      switch (result.success) {
+
+         // ON SUCCESS
+         case true:
+            dispatch({
+               type: 'add',
+               payload: {
+                  message: name,
+                  status: 'completed',
+                  data: result.data
+               }
+            })
+         break;
+
+         // SOMETHING WENT WRONG
+         default: {
+            dispatch({
+               type: 'add',
+               payload: {
+                  message: name,
+                  status: 'aborted',
+                  reason: result.reason
+               }
+            })
+         }
+      }
+   })
+}
+
 // GENERATE A TASK QUERY
-function query({ start, success, error, func }, messages, dispatch) {
+function query_old({ start, success, error, func }, messages, dispatch) {
 
    // START TASK
    dispatch({
@@ -19,7 +61,6 @@ function query({ start, success, error, func }, messages, dispatch) {
    func.then(result => {
       switch (result.success) {
 
-         // EVERYTHING WENT OK
          case true:
             dispatch({
                type: 'finish',
