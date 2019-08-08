@@ -3,34 +3,15 @@ import { Box } from 'ink';
 import Message from './message';
 
 function Container({ data }) { return (
-   <Box flexDirection="column" padding={ 1 } paddingLeft={ 2 }>
-      <Content data={ data } />
-   </Box>
-)}
-
-function Content({ data }) {
-   switch (data.length) {
-
-      // NO MESSAGES
-      case 0: { return (
+   <Box flexDirection="column" paddingLeft={ 2 } paddingRight={ 2 }>
+      { data.map((item, index) =>
          <Message
-            text={ 'What would you like to do?' }
+            item={ item }
             color={ '#FFA500' }
+            key={ index }
          />
       )}
-
-      // LOOP MESSAGES
-      default: { return (
-         data.map((item, index) =>
-            <Message
-               text={ item.message + '\t\t\t' + item.status }
-               extra={ item.extra }
-               color={ '#FFA500' }
-               key={ index }
-            />
-         )
-      )}
-   }
-}
+   </Box>
+)}
 
 export default Container;

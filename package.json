@@ -16,6 +16,7 @@
    "license": "MIT",
    "dependencies": {
       "ink": "^2.1.1",
+      "ink-divider": "^2.0.1",
       "ink-select-input": "^3.1.2",
       "ink-spinner": "^3.0.1",
       "ink-text-input": "^3.2.1",

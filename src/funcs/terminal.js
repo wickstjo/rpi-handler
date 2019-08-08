@@ -2,7 +2,7 @@ import terminal from 'node-cmd';
 import sha256 from 'sha256';
 
 // CHECK IF A ADDRESS/PORT IS REACHABLE
-function ping(host, port) {
+function ping({ host, port }) {
    return run('nc -vz ' + host + ' ' + port);
 }
 

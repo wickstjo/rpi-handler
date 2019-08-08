@@ -11,9 +11,9 @@ function check(hash, state) {
 }
 
 // REGISTER DEVICE
-function register(hash, name, state) {
+function register(hash, state) {
    return transaction({
-      query: state.contracts.devices.methods.add(hash, name),
+      query: state.contracts.devices.methods.add(hash),
       contract: state.contracts.devices._address,
   }, state)
 }
