@@ -1,17 +1,27 @@
 import React from 'react';
-import { Box } from 'ink';
-import Message from './message';
+import { Box, Color } from 'ink';
 
-function Container({ data }) { return (
-   <Box flexDirection="column" paddingLeft={ 2 } paddingRight={ 2 }>
-      { data.map((item, index) =>
-         <Message
-            item={ item }
-            color={ '#FFA500' }
-            key={ index }
-         />
+function Messages({ data }) {
+   switch(data.length) {
+      
+      // NO MESSAGES
+      case 0: {
+         return null;
+      }
+
+      // RENDER MESSAGES
+      default: { return (
+         <Box flexDirection="column" paddingLeft={ 2 } paddingBottom={ 1 }>
+            { data.map((item, index) =>
+               <Box flexGrow={ 1 } key={ index }>
+                  <Color hex={ item.color }>
+                     { item.text }
+                  </Color>
+               </Box>
+            )}
+         </Box>
       )}
-   </Box>
-)}
+   }
+}
 
-export default Container;
+export default Messages;

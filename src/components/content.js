@@ -1,0 +1,10 @@
+import React from 'react';
+import { Box } from 'ink';
+
+function Content({ children }) { return (
+   <Box paddingLeft={ 2 } paddingTop={ 1 } paddingBottom={ 1 }>
+      { children }
+   </Box>
+)}
+
+export default Content;
