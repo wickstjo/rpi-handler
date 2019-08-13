@@ -1,24 +1,17 @@
-import { transaction, call } from '../funcs/blockchain';
+import { transaction } from '../funcs/blockchain';
+import { init } from '../funcs/connection';
 
-// CHECK IF DEVICE IS REGISTERED
-function check(hash, state) {
-   return call({
-      query: state.contracts.devices.methods.fetch(hash),
-      callback: (response) => {
-         return response;
-      }
-  })
-}
+// CONNECT
+const { contracts, web3 } = init();
 
 // REGISTER DEVICE
-function register(hash, state) {
+function register(hash) {
    return transaction({
-      query: state.contracts.devices.methods.add(hash),
-      contract: state.contracts.devices._address,
-  }, state)
+      query: contracts.devices.methods.add(hash),
+      contract: contracts.devices._address,
+  }, web3)
 }
 
 export {
-   check,
    register
 }

@@ -1,14 +1,19 @@
 import React, { useReducer } from 'react';
-import { Box, AppContext, render } from 'ink';
+import { render } from 'ink';
 import { reducer, values } from './states/device';
 
+import { register } from './contracts/devices';
+import { passport } from './funcs/terminal';
+import { terminate } from './funcs/misc';
+
+import Main from './components/main';
 import Header from './components/header';
 import Footer from './components/footer';
 import Content from './components/content';
 import Input from './components/input';
 import Messages from './components/messages';
 
-function Device({ terminate }) {
+function Device() {
 
    // LOCAL STATE
    const [state, dispatch] = useReducer(reducer, values);
@@ -42,7 +47,7 @@ function Device({ terminate }) {
       if(!state.locked) {
 
          // VALIDATE INPUT
-         const result = validate(state.input);
+         let result = validate(state.input);
 
          // ON SUCCESS
          if (result.success) {
@@ -50,16 +55,66 @@ function Device({ terminate }) {
             // LOCK FURTHER SUBMISSIONS
             dispatch({ type: 'lock' })
 
-            // SEND MESSAGE
+            // SEND MSG
             dispatch({
                type: 'good msg',
                payload: 'Name passed validation!'
             })
 
-            // SHOW FOOTER & TERMINATE APPLICATION
-            dispatch({ type: 'footer' })
-            terminate();
+            // GENERATE DEVICE PASSPORT
+            passport().then(result => {
 
+               // ON SUCCESS
+               if (result.success) {
+
+                  // DEVICE PASSPORT
+                  const pass = result.data;
+
+                  // SEND MSG
+                  dispatch({
+                     type: 'good msg',
+                     payload: 'Passport generated: ' + pass
+                  })
+
+                  // ATTEMPT TO REGISTER
+                  register(pass).then(result => {
+                     
+                     // ON SUCCESS
+                     if (result.success) {
+
+                        // SEND MSG
+                        dispatch({
+                           type: 'good msg',
+                           payload: 'Device registered successfully!'
+                        })
+
+                        // KILL THE APP
+                        terminate();
+
+                     // ON ERROR
+                     } else {
+                        dispatch({
+                           type: 'terminate',
+                           payload: 'Could not register: ' + result.reason
+                        })
+                        
+                        // KILL THE APP
+                        terminate();
+                     }
+                  })
+
+               // ON ERROR
+               } else {
+                  dispatch({
+                     type: 'terminate',
+                     payload: 'Could not generate passport: ' + result.reason
+                  })
+
+                  // KILL THE APP
+                  terminate();
+               }
+            })
+         
          // ON ERROR
          } else {
             dispatch({
@@ -71,7 +126,7 @@ function Device({ terminate }) {
    }
 
    return (
-      <Box flexDirection="column">
+      <Main>
          <Header text={ 'Register Device' } />
          <Content>
             <Input
@@ -84,14 +139,8 @@ function Device({ terminate }) {
          </Content>
          <Messages data={ state.messages } />
          <Footer show={ state.footer } />
-      </Box>
+      </Main>
    )
 }
 
-render(
-   <AppContext.Consumer>
-      {({ exit }) => (
-         <Device terminate={ exit }/>
-      )}
-   </AppContext.Consumer>
-)
+render(<Device />)

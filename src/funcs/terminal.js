@@ -1,12 +1,13 @@
 import terminal from 'node-cmd';
 import sha256 from 'sha256';
+import { camera } from '../resources/settings.json';
 
 // CHECK IF A ADDRESS/PORT IS REACHABLE
 function ping({ host, port }) {
    return run('nc -vz ' + host + ' ' + port);
 }
 
-// GENERATE ID BASED ON HARDWARE SNAPSHOT & SERIAL NUMBER
+// HASH HARDWARE & SERIAL NUMBER
 function passport() {
    return run('lshw').then(result => {
       switch (result.success) {
@@ -27,12 +28,12 @@ function passport() {
 
 // TAKE PICTURE & PUSH IT TO IPFS
 function picture(name) {
-   return run('raspistill -o /home/wickstjo/cam/' + name + '.jpg');
+   return run('raspistill -o ' + camera + name + '.jpg');
 }
 
 // RECORD VIDEO & PUSH IT TO IPFS
 function video(name, time) {
-   return run('raspivid -o /home/wickstjo/cam/' + name + '.h264 -t ' + (time * 1000));
+   return run('raspivid -o ' + camera + name + '.h264 -t ' + (time * 1000));
 }
 
 // PROMISIFY TERMINAL COMMAND
@@ -52,7 +53,7 @@ function run(command) {
             // OTHERWISE
             default:
                resolve({
-                  reason: standard
+                  reason: standard.replace('\n', '')
                })
             break;
          }

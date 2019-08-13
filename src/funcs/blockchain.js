@@ -1,7 +1,7 @@
 import { keys } from '../resources/settings.json';
 
 // SIGN SMART CONTRACT TRANSACTION
-function transaction({ query, contract, payable }, state) {
+function transaction({ query, contract, payable }, web3) {
 
    // TRANSACTION OUTLINE
    const tx = {
@@ -22,8 +22,8 @@ function transaction({ query, contract, payable }, state) {
       tx.gas = price;
 
       // SIGN IT & EXECUTE
-      return state.web3.eth.accounts.signTransaction(tx, keys.private).then(signed => {
-         return state.web3.eth.sendSignedTransaction(signed.rawTransaction).then(() => {
+      return web3.eth.accounts.signTransaction(tx, keys.private).then(signed => {
+         return web3.eth.sendSignedTransaction(signed.rawTransaction).then(() => {
             return {
                success: true
             }
@@ -58,6 +58,19 @@ function call({ query, callback }) {
    })
 }
 
+function variable(query, callback) {
+   return query().then(response => {
+      return {
+         success: true,
+         data: callback(response)
+      }
+   }).catch(error => {
+      return {
+         reason: prune(error)
+      }
+   })
+}
+
 // PRUNE ERROR MESSAGE
 function prune(error) {
 
@@ -68,22 +81,8 @@ function prune(error) {
    return error;
 }
 
-// LISTEN TO CONTRACT EVENTS
-function listen(query) {
-   return query.on('data', event => {
-      return {
-         success: true,
-         data: 'now listening ...'
-      }
-   }).on('error', event => {
-      return {
-         reason: 'something went wrong'
-      }
-   })
-}
-
 export {
    transaction,
    call,
-   listen
+   variable
 }
