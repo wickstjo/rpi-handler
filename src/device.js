@@ -130,7 +130,7 @@ function Device() {
             <Input
                header={ 'Give the device a nickname:' }
                value={ state.input }
-               placeholder={ '"leet rpi"' }
+               placeholder={ 'Cool Device' }
                update={ update }
                submit={ execute }
             />

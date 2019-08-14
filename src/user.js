@@ -101,7 +101,7 @@ function Device() {
             <Input
                header={ 'Enter your name:' }
                value={ state.input }
-               placeholder={ '"John Wick"' }
+               placeholder={ 'John Wick' }
                update={ update }
                submit={ execute }
             />
