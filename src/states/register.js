@@ -50,18 +50,6 @@ function reducer(state, action) {
          ]
       }}
 
-      // TERMINATE APP
-      case 'terminate': { return {
-         ...state,
-         footer: true,
-         messages: [
-            ...state.messages, {
-               text: action.payload,
-               color: '#F24F4F'
-            }
-         ]
-      }}
-
       // FALLBACK
       default: {
          return state;

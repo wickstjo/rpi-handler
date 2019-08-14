@@ -1,2 +1,2 @@
 require('@babel/register');
-require('./src/device');
+require('../src/user');

@@ -2,8 +2,7 @@ import React, { useReducer } from 'react';
 import { render } from 'ink';
 import { reducer, values } from './states/register';
 
-import { register } from './contracts/devices';
-import { passport } from './funcs/terminal';
+import { register } from './contracts/users';
 import { terminate } from './funcs/misc';
 
 import Main from './components/main';
@@ -30,14 +29,14 @@ function Device() {
 
    // VALIDATE INPUT
    function validate(input) {
-      if (input.length >= 3 && input.length <= 15) {
+      if (input.length >= 3 && input.length <= 30) {
          return {
             success: true
          }
       } else {
          return {
             success: false,
-            reason: 'Bad name length, 3-15 characters!'
+            reason: 'Bad name length, 3-30 characters!'
          }
       }
    }
@@ -61,56 +60,28 @@ function Device() {
                payload: 'Name passed validation!'
             })
 
-            // GENERATE DEVICE PASSPORT
-            passport().then(result => {
-
-               // ON SUCCESS
+            // ATTEMPT TO REGISTER USER
+            register(state.input).then(result => {
                if (result.success) {
 
-                  // DEVICE PASSPORT
-                  const pass = result.data;
-
-                  // SEND MSG
+                  // ON SUCCESS
                   dispatch({
                      type: 'good msg',
-                     payload: 'Passport generated: ' + pass
+                     payload: 'User registered successfully!'
                   })
 
-                  // ATTEMPT TO REGISTER
-                  register(pass, state.input).then(result => {
-                     if (result.success) {
-
-                        // ON SUCCESS
-                        dispatch({
-                           type: 'good msg',
-                           payload: 'Device registered successfully!'
-                        })
-
-                     } else {
-
-                        // ON ERROR
-                        dispatch({
-                           type: 'bad msg',
-                           payload: 'Could not register: ' + result.reason
-                        })
-                     }
-
-                     // REGARDLESS, SHOW FOOTER & KILL THE APP
-                     dispatch({ type: 'footer' })
-                     terminate();
-                  })
-
-               // ON ERROR
                } else {
+
+                  // ON ERROR
                   dispatch({
                      type: 'bad msg',
-                     payload: 'Could not generate passport: ' + result.reason
+                     payload: 'Could not register user: ' + result.reason
                   })
-
-                  // SHOW FOOTER & TERMINATE THE APP
-                  dispatch({ type: 'footer' })
-                  terminate();
                }
+
+               // REGARDLESS, SHOW FOOTER & TERMINATE THE APP
+               dispatch({ type: 'footer' })
+               terminate();
             })
          
          // ON ERROR
@@ -125,12 +96,12 @@ function Device() {
 
    return (
       <Main>
-         <Header text={ 'Register Device' } />
+         <Header text={ 'Register User' } />
          <Content>
             <Input
-               header={ 'Give the device a nickname:' }
+               header={ 'Enter your name:' }
                value={ state.input }
-               placeholder={ '"leet rpi"' }
+               placeholder={ '"John Wick"' }
                update={ update }
                submit={ execute }
             />

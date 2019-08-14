@@ -5,10 +5,10 @@ import { init } from '../funcs/connection';
 const { contracts, web3 } = init();
 
 // REGISTER DEVICE
-function register(hash, name) {
+function register(name) {
    return transaction({
-      query: contracts.devices.methods.add(hash, name),
-      contract: contracts.devices._address,
+      query: contracts.users.methods.add(name),
+      contract: contracts.users._address,
    }, web3)
 }
 

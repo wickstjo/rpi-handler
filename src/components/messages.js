@@ -11,7 +11,7 @@ function Messages({ data }) {
 
       // RENDER MESSAGES
       default: { return (
-         <Box flexDirection="column" paddingLeft={ 2 } paddingBottom={ 1 }>
+         <Box flexDirection="column" paddingLeft={ 2 } paddingBottom={ 1 } paddingTop={ 1 }>
             { data.map((item, index) =>
                <Box flexGrow={ 1 } key={ index }>
                   <Color hex={ item.color }>
