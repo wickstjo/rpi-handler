@@ -3,7 +3,7 @@ import { render } from 'ink';
 import { reducer, values } from './states/register';
 
 import { register } from './contracts/users';
-import { terminate } from './funcs/misc';
+import { assess } from './funcs/blockchain';
 
 import Main from './components/main';
 import Header from './components/header';
@@ -48,49 +48,22 @@ function Device() {
          // VALIDATE INPUT
          let result = validate(state.input);
 
-         // ON SUCCESS
-         if (result.success) {
+         assess({
+            msg: 'Name passed validation!',
+            crash: false,
+            next: () => {
 
-            // LOCK FURTHER SUBMISSIONS
-            dispatch({ type: 'lock' })
+               // LOCK FURTHER SUBMISSIONS
+               dispatch({ type: 'lock' })
 
-            // SEND MSG
-            dispatch({
-               type: 'good msg',
-               payload: 'Name passed validation!'
-            })
-
-            // ATTEMPT TO REGISTER USER
-            register(state.input).then(result => {
-               if (result.success) {
-
-                  // ON SUCCESS
-                  dispatch({
-                     type: 'good msg',
-                     payload: 'User registered successfully!'
-                  })
-
-               } else {
-
-                  // ON ERROR
-                  dispatch({
-                     type: 'bad msg',
-                     payload: 'Could not register user: ' + result.reason
-                  })
-               }
-
-               // REGARDLESS, SHOW FOOTER & TERMINATE THE APP
-               dispatch({ type: 'footer' })
-               terminate();
-            })
-         
-         // ON ERROR
-         } else {
-            dispatch({
-               type: 'bad msg',
-               payload: result.reason
-            })
-         }
+               // ATTEMPT TO REGISTER
+               register(state.input).then(result => {
+                  assess({
+                     msg: 'User registered successfully!'
+                  }, result, dispatch)
+               })
+            }
+         }, result, dispatch)
       }
    }
 

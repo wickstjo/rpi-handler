@@ -3,13 +3,13 @@ import { render } from 'ink';
 import { reducer, values } from './states/basic';
 
 import { passport } from './funcs/terminal';
-import { terminate } from './funcs/misc';
 import { fetch, listen } from './contracts/devices';
+import { assess } from './funcs/blockchain';
 
 import Main from './components/main';
 import Header from './components/header';
-import Footer from './components/footer';
 import Messages from './components/messages';
+import Footer from './components/footer';
 
 function Listen() {
 
@@ -18,66 +18,31 @@ function Listen() {
 
    // PING THE GATEWAYS
    useEffect(() => {
+
+      // GENERATE PASSPORT
       passport().then(result => {
-         if (result.success) {
+         assess({
+            msg: 'Passport generated: ' + result.data,
+            next: (data) => {
 
-            // DEVICE PASSPORT
-            const pass = result.data;
+               // FETCH ADDRESS
+               fetch(data).then(result => {
+                  assess({
+                     msg: 'Address fetched: ' + result.data + '\n\nNow listening...\n',
+                     next: (data) => {
 
-            // SEND MSG
-            dispatch({
-               type: 'good msg',
-               payload: 'Passport generated: ' + pass
-            })
-
-            // FETCH DEVICE ADDRESS
-            fetch(pass).then(result => {
-               if (result.success) {
-
-                  // SEND MSG
-                  dispatch({
-                     type: 'good msg',
-                     payload: 'Address fetched: ' + result.data
-                  })
-
-                  // SEND MSG
-                  dispatch({
-                     type: 'good msg',
-                     payload: 'Listening now...\n'
-                  })
-
-                  // START LISTENING
-                  listen(result.data).on('data', event => {
-                     dispatch({
-                        type: 'good msg',
-                        payload: 'Task assigned: ' + event.returnValues.task
-                     })
-                  })
-               } else {
-
-                  // ON ERROR
-                  dispatch({
-                     type: 'bad msg',
-                     payload: 'Could not fetch address: ' + result.reason
-                  })
-
-                  // SHOW FOOTER & TERMINATE
-                  dispatch({ type: 'footer' })
-                  terminate();
-               }
-            })
-         } else {
-
-            // ON ERROR
-            dispatch({
-               type: 'bad msg',
-               payload: 'Could not generate passport: ' + result.reason
-            })
-
-            // SHOW FOOTER & TERMINATE
-            dispatch({ type: 'footer' })
-            terminate();
-         }
+                        // START LISTENING
+                        listen(data).on('data', event => {
+                           dispatch({
+                              type: 'good msg',
+                              payload: 'Task assigned: ' + event.returnValues.task
+                           })
+                        })
+                     }
+                  }, result, dispatch)
+               })
+            }
+         }, result, dispatch)
       })
    }, [])
 

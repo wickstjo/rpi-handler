@@ -4,7 +4,7 @@ import { reducer, values } from './states/register';
 
 import { register } from './contracts/devices';
 import { passport } from './funcs/terminal';
-import { terminate } from './funcs/misc';
+import { assess } from './funcs/blockchain';
 
 import Main from './components/main';
 import Header from './components/header';
@@ -49,77 +49,31 @@ function Device() {
          // VALIDATE INPUT
          let result = validate(state.input);
 
-         // ON SUCCESS
-         if (result.success) {
+         assess({
+            msg: 'Name passed validation!',
+            crash: false,
+            next: () => {
 
-            // LOCK FURTHER SUBMISSIONS
-            dispatch({ type: 'lock' })
+               // LOCK FURTHER SUBMISSIONS
+               dispatch({ type: 'lock' })
 
-            // SEND MSG
-            dispatch({
-               type: 'good msg',
-               payload: 'Name passed validation!'
-            })
+               // GENERATE PASSPORT
+               passport().then(result => {
+                  assess({
+                     msg: 'Passport generated: ' + result.data,
+                     next: (pass) => {
 
-            // GENERATE DEVICE PASSPORT
-            passport().then(result => {
-
-               // ON SUCCESS
-               if (result.success) {
-
-                  // DEVICE PASSPORT
-                  const pass = result.data;
-
-                  // SEND MSG
-                  dispatch({
-                     type: 'good msg',
-                     payload: 'Passport generated: ' + pass
-                  })
-
-                  // ATTEMPT TO REGISTER
-                  register(pass, state.input).then(result => {
-                     if (result.success) {
-
-                        // ON SUCCESS
-                        dispatch({
-                           type: 'good msg',
-                           payload: 'Device registered successfully!'
-                        })
-
-                     } else {
-
-                        // ON ERROR
-                        dispatch({
-                           type: 'bad msg',
-                           payload: 'Could not register: ' + result.reason
+                        // ATTEMPT TO REGISTER
+                        register(pass, state.input).then(result => {
+                           assess({
+                              msg: 'Device registered successfully!'
+                           }, result, dispatch)
                         })
                      }
-
-                     // REGARDLESS, SHOW FOOTER & KILL THE APP
-                     dispatch({ type: 'footer' })
-                     terminate();
-                  })
-
-               // ON ERROR
-               } else {
-                  dispatch({
-                     type: 'bad msg',
-                     payload: 'Could not generate passport: ' + result.reason
-                  })
-
-                  // SHOW FOOTER & TERMINATE THE APP
-                  dispatch({ type: 'footer' })
-                  terminate();
-               }
-            })
-         
-         // ON ERROR
-         } else {
-            dispatch({
-               type: 'bad msg',
-               payload: result.reason
-            })
-         }
+                  }, result, dispatch)
+               })
+            }
+         }, result, dispatch)
       }
    }
 

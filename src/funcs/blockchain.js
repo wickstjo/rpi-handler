@@ -1,4 +1,5 @@
 import { keys } from '../resources/settings.json';
+import { terminate } from '../funcs/misc';
 
 // SIGN SMART CONTRACT TRANSACTION
 function transaction({ query, contract, payable }, web3) {
@@ -80,6 +81,50 @@ function assemble({ address, contract }, web3, interfaces) {
    )
 }
 
+// ASSESS METHOD RESPONSE
+function assess({ msg, error, crash, next }, result, dispatch) {
+   switch(result.success) {
+
+      // ON SUCCESS
+      case true:
+
+         // IF PROVIDED, SEND MESSAGE
+         if (msg !== undefined) {
+            dispatch({
+               type: 'good msg',
+               payload: msg
+            })
+         }
+
+         // IF PROVIDED, EXECUTE FOLLOW-UP FUNCTION
+         if (next !== undefined) {
+            next(result.data)
+
+         // OTHERWISE, SHOW FOOTER & TERMINATE
+         } else {
+            dispatch({ type: 'footer' })
+            terminate();
+         }
+      break;
+
+      // ON ERROR
+      default: {
+         dispatch({
+            type: 'bad msg',
+            payload: (error === undefined) ? 'Error: ' + result.reason : error
+         })
+
+         // SHOW FOOTER
+         dispatch({ type: 'footer' })
+         
+         // CRASH IF NECESSARY
+         if (crash !== false) {
+            terminate();
+         }
+      }
+   }
+}
+
 // PRUNE ERROR MESSAGE
 function prune(error) {
 
@@ -94,5 +139,6 @@ export {
    transaction,
    call,
    variable,
-   assemble
+   assemble,
+   assess
 }

@@ -3,6 +3,7 @@ import { render } from 'ink';
 import { reducer, values } from './states/basic';
 
 import { gateways } from './resources/settings.json';
+import { assess } from './funcs/blockchain';
 import { ping } from './funcs/terminal';
 
 import Main from './components/main';
@@ -20,45 +21,20 @@ function Gateways() {
 
       // PING THE BLOCKCHAIN GATEWAY
       ping(gateways.blockchain).then(result => {
-         if(result.success) {
-
-            // ON SUCCESS
-            dispatch({
-               type: 'good msg',
-               payload: 'The Blockchain gateway Online'
-            })
-
-         } else {
-
-            // ON ERROR
-            dispatch({
-               type: 'bad msg',
-               payload: 'The Blockchain gateway Offline'
-            })
-         }
-
-         // PING THE BLOCKCHAIN GATEWAY
-         ping(gateways.ipfs).then(result => {
-            if(result.success) {
-
-               // ON SUCCESS
-               dispatch({
-                  type: 'good msg',
-                  payload: 'The IPFS gateway is Online'
-               })
-
-            } else {
-
-               // ON ERROR
-               dispatch({
-                  type: 'bad msg',
-                  payload: 'The IPFS gateway is Offline'
+         assess({
+            msg: 'The Blockchain gateway Online',
+            error: 'The Blockchain gateway Offline',
+            next: () => {
+               
+               // PING THE IPFS GATEWAY
+               ping(gateways.ipfs).then(result => {
+                  assess({
+                     msg: 'The IPFS gateway Online',
+                     error: 'The IPFS gateway Offline'
+                  }, result, dispatch)
                })
             }
-
-            // REGARDLESS, SHOW THE FOOTER
-            dispatch({ type: 'footer' })
-         })
+         }, result, dispatch)
       })
    }, [])
 
