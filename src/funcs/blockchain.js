@@ -58,6 +58,7 @@ function call({ query, callback }) {
    })
 }
 
+// CALL VARIABLE DIRECTLY
 function variable(query, callback) {
    return query().then(response => {
       return {
@@ -69,6 +70,14 @@ function variable(query, callback) {
          reason: prune(error)
       }
    })
+}
+
+// ASSEMBLE SINGLE CONTRACT REFERENCE
+function assemble({ address, contract }, web3, interfaces) {
+   return new web3.eth.Contract(
+      interfaces[contract],
+      address
+   )
 }
 
 // PRUNE ERROR MESSAGE
@@ -84,5 +93,6 @@ function prune(error) {
 export {
    transaction,
    call,
-   variable
+   variable,
+   assemble
 }

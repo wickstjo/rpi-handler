@@ -1,2 +1,2 @@
 require('@babel/register');
-require('../src/setup');
+require('../src/listen');

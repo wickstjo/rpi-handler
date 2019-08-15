@@ -1,6 +1,6 @@
 import React, { useReducer, useEffect } from 'react';
 import { render } from 'ink';
-import { reducer, values } from './states/gateways';
+import { reducer, values } from './states/basic';
 
 import { gateways } from './resources/settings.json';
 import { ping } from './funcs/terminal';
