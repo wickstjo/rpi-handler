@@ -99,11 +99,13 @@ function assess({ msg, error, crash, next }, result, dispatch) {
          // IF PROVIDED, EXECUTE FOLLOW-UP FUNCTION
          if (next !== undefined) {
             next(result.data)
-
+      
          // OTHERWISE, SHOW FOOTER & TERMINATE
          } else {
-            dispatch({ type: 'footer' })
-            terminate();
+            if (crash !== false) {
+               dispatch({ type: 'footer' })
+               terminate();
+            }
          }
       break;
 

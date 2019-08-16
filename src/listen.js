@@ -4,6 +4,7 @@ import { reducer, values } from './states/basic';
 
 import { passport } from './funcs/terminal';
 import { fetch, listen } from './contracts/devices';
+import { submit } from './contracts/task';
 import { assess } from './funcs/blockchain';
 
 import Main from './components/main';
@@ -28,14 +29,26 @@ function Listen() {
                // FETCH ADDRESS
                fetch(data).then(result => {
                   assess({
-                     msg: 'Address fetched: ' + result.data + '\n\nNow listening...\n',
+                     msg: 'Address fetched: ' + result.data + '\n\nNow listening...',
                      next: (data) => {
 
+                        let assignment = listen(data)
+
                         // START LISTENING
-                        listen(data).on('data', event => {
+                        assignment.on('data', event => {
+
+                           // SEND MSG
                            dispatch({
                               type: 'good msg',
-                              payload: 'Task assigned: ' + event.returnValues.task
+                              payload: '\nTask assigned: ' + event.returnValues.task
+                           })
+
+                           // SUBMIT RESPONSE
+                           submit(event.returnValues.task, 'QmTkzDwWqPbnAh5YiV5VwcTLnGdwSNsNTn2aDxdXBFca7D').then(result => {
+                              assess({
+                                 msg: 'Responded successfully!',
+                                 crash: false
+                              }, result, dispatch)
                            })
                         })
                      }
