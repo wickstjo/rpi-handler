@@ -2,10 +2,12 @@ import React, { useReducer, useEffect } from 'react';
 import { render } from 'ink';
 import { reducer, values } from './states/basic';
 
-import { passport } from './funcs/terminal';
+import { passport, picture } from './funcs/terminal';
 import { fetch, listen } from './contracts/devices';
 import { submit } from './contracts/task';
 import { assess } from './funcs/blockchain';
+import { add } from './funcs/ipfs';
+import { camera } from './resources/settings.json';
 
 import Main from './components/main';
 import Header from './components/header';
@@ -21,42 +23,55 @@ function Listen() {
    useEffect(() => {
 
       // GENERATE PASSPORT
-      passport().then(result => {
-         assess({
-            msg: 'Passport generated: ' + result.data,
-            next: (data) => {
+      passport().then(result => { assess({
+         msg: 'Passport generated: ' + result.data,
+         next: (data) => {
 
-               // FETCH ADDRESS
-               fetch(data).then(result => {
-                  assess({
-                     msg: 'Address fetched: ' + result.data + '\n\nNow listening...',
-                     next: (data) => {
+            // FETCH ADDRESS
+            fetch(data).then(result => { assess({
+               msg: 'Address fetched: ' + result.data + '\n\nNow listening...',
+               next: (data) => {
 
-                        let assignment = listen(data)
+                  let assignment = listen(data)
 
-                        // START LISTENING
-                        assignment.on('data', event => {
+                  // START LISTENING
+                  assignment.on('data', event => {
 
-                           // SEND MSG
-                           dispatch({
-                              type: 'good msg',
-                              payload: '\nTask assigned: ' + event.returnValues.task
-                           })
+                     // TASK CONTRACT
+                     const contract = event.returnValues.task;
 
-                           // SUBMIT RESPONSE
-                           submit(event.returnValues.task, 'QmTkzDwWqPbnAh5YiV5VwcTLnGdwSNsNTn2aDxdXBFca7D').then(result => {
-                              assess({
-                                 msg: 'Responded successfully!',
-                                 crash: false
-                              }, result, dispatch)
-                           })
-                        })
-                     }
-                  }, result, dispatch)
-               })
-            }
-         }, result, dispatch)
-      })
+                     // SEND MSG
+                     dispatch({
+                        type: 'good msg',
+                        payload: '\nTask assigned: ' + contract
+                     })
+
+                     // TAKE PICTURE
+                     picture(contract).then(result => { assess({
+                        msg: 'Took Picture Successfully!',
+                        next: () => {
+
+                           // ADD PICTURE TO IPFS
+                           add({ type: 'file', payload: camera + contract + '.jpg' }).then(result => { assess({
+                              msg: 'IPFS Location: ' + result.data,
+                              next: (hash) => {
+
+                                 // SUBMIT RESPONSE
+                                 submit(contract, hash).then(result => {
+                                    assess({
+                                       msg: 'Responded successfully!',
+                                       crash: false
+                                    }, result, dispatch)
+                                 })
+                              }
+                           }, result, dispatch) })
+                        }
+                     }, result, dispatch) })
+                  })
+               }
+            }, result, dispatch) })
+         }
+      }, result, dispatch) })
    }, [])
 
    return (
